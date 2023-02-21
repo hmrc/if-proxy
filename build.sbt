@@ -1,17 +1,21 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.DefaultBuildSettings.{integrationTestSettings, targetJvm}
 
-lazy val microservice = Project("if-proxy", file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+val appName = "if-proxy"
+
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always // Resolves versions conflict
+
+lazy val microservice = Project(appName, file("."))
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .settings(
     majorVersion        := 0,
-    scalaVersion        := "2.13.8",
-    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    scalaVersion        := "2.13.10",
+    targetJvm           := "jvm-11",
+    libraryDependencies ++= AppDependencies.appDependencies,
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
+    PlayKeys.playDefaultPort := 8882
   )
-  .settings(publishingSettings: _*)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)

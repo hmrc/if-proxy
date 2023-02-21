@@ -1,7 +1,14 @@
 
 # if-proxy
 
-This is a placeholder README.md for a new repository
+Proxy service to forward requests from CCYCTB frontend to Integration Framework https://ifs.ws.ibt.hmrc.gov.uk
+
+Potentially the service can be extended to use other IF endpoints by other VOA microservices.
+
+### Run
+
+`if-proxy` service must be deployed to `protected` zone to have direct connection to Integration Framework server. 
+
 
 ### License
 

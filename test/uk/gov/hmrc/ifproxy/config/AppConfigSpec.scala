@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.ifproxy.controllers
+package uk.gov.hmrc.ifproxy.config
 
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import javax.inject.{Inject, Singleton}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.test.Injecting
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject()(cc: ControllerComponents)
-    extends BackendController(cc) {
+/**
+ * @author Yuriy Tumakha
+ */
+class AppConfigSpec extends AnyFlatSpec with should.Matchers with Injecting with GuiceOneAppPerSuite {
 
-  def hello(): Action[AnyContent] = Action {
-    Ok("Hello world")
+  private val appConfig = inject[AppConfig]
+
+  "AppConfig" should "provide correct appName" in {
+    appConfig.appName shouldBe "if-proxy"
   }
 
 }
