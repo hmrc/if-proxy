@@ -17,6 +17,7 @@
 package uk.gov.hmrc.ifproxy.controllers
 
 import play.api.Logging
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import uk.gov.hmrc.http.HttpVerbs.{GET, POST}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
@@ -68,13 +69,13 @@ class ValuationsProxyController @Inject()(
     forwardPostRequest(submitChallengeEndpoint)
   }
 
-  private def forwardGetRequest(url: String)(implicit request: Request[_]): Future[Result] =
+  private def forwardGetRequest(url: String)(implicit request: Request[AnyContent]): Future[Result] =
     forwardRequest(GET, url)
 
-  private def forwardPostRequest(url: String)(implicit request: Request[_]): Future[Result] =
+  private def forwardPostRequest(url: String)(implicit request: Request[AnyContent]): Future[Result] =
     forwardRequest(POST, url)
 
-  private def forwardRequest(httpVerb: String, url: String)(implicit request: Request[_]): Future[Result] = {
+  private def forwardRequest(httpVerb: String, url: String)(implicit request: Request[AnyContent]): Future[Result] = {
     logger.info(s"$httpVerb $url Request Headers:\n${toPrintableHeaders(request.headers.headers)}")
 
     val headers = staticHeaders ++ extractHeaders(forwardHeaders)
@@ -87,7 +88,10 @@ class ValuationsProxyController @Inject()(
       if (httpVerb == GET) {
         httpClient.GET[HttpResponse](url, Seq.empty, headers)
       } else {
-        httpClient.POSTString[HttpResponse](url, request.body.toString, headers)
+        request.body.asJson match {
+          case Some(json) => httpClient.POST[JsValue, HttpResponse](url, json, headers)
+          case None => Future.failed(NonJsonBodyException())
+        }
       }
 
     result.map { response =>
@@ -104,6 +108,8 @@ class ValuationsProxyController @Inject()(
 
       Status(response.status)(body)
         .withHeaders(responseHeaders: _*)
+    }.recover {
+      case _: NonJsonBodyException => BadRequest(Json.obj("statusCode" -> BAD_REQUEST, "message" -> "JSON body is expected in request"))
     }
   }
 
