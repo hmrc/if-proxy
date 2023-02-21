@@ -49,7 +49,7 @@ class MockHttpClient @Inject()(
                        ec: ExecutionContext
                      ): Future[A] = {
     val status =
-      if (url == "http://localhost:8887/valuations/get-property/UNKNOWN_ID") {
+      if (url.contains("UNKNOWN_ID")) {
         NOT_FOUND
       } else {
         OK
