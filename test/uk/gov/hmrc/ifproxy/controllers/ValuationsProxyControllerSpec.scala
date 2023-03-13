@@ -67,7 +67,7 @@ class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers wit
 
   "POST /valuations/council-tax-band-challenge" should "return 201" in {
     val requestWithJsonBody = fakeRequest.withMethod("POST").withJsonBody(Json.obj("param1" -> "value1"))
-    val expectedJson = Json.parse("""{"requestUrl":"http://localhost:8887/valuations/council-tax-band-challenge/","requestBody":{"param1":"value1"}}""")
+    val expectedJson = Json.parse("""{"requestUrl":"http://localhost:8887/valuations/council-tax-band-challenge","requestBody":{"param1":"value1"}}""")
     val result = controller.valuationsCouncilTaxBandChallengePost()(requestWithJsonBody)
 
     status(result) shouldBe CREATED

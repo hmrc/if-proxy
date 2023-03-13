@@ -43,7 +43,7 @@ class ValuationsProxyController @Inject()(
   private val baseUrl = s"${appConfig.ifBaseUrl}/valuations"
   private val searchEndpoint = s"$baseUrl/get-properties/"
   private val getPropertyEndpoint = s"$baseUrl/get-property/"
-  private val submitChallengeEndpoint = s"$baseUrl/council-tax-band-challenge/"
+  private val submitChallengeEndpoint = s"$baseUrl/council-tax-band-challenge"
 
   private val staticHeaders: Seq[(String, String)] = Seq(
     AUTHORIZATION -> s"Bearer ${appConfig.ifToken}",
