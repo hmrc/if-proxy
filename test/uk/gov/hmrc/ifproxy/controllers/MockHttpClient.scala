@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.ifproxy.controllers
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import play.api.Configuration
 import play.api.http.Status.{CREATED, NOT_FOUND, OK}
 import play.api.libs.json.{JsValue, Json, Writes}
