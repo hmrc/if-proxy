@@ -18,8 +18,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(CodeCoverageSettings.settings)
 
-lazy val it =
-  (project in file("it"))
-    .enablePlugins(PlayScala)
-    .dependsOn(microservice % "test->test")
-    .settings(itSettings)
+lazy val it = (project in file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings)
