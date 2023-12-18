@@ -8,10 +8,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion
   )
 
-  private val testScope = "test, it"
-
-  private def test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc" %% "bootstrap-test-play-30"    % bootstrapVersion % testScope
+  private val test = Seq(
+    "uk.gov.hmrc" %% "bootstrap-test-play-30"    % bootstrapVersion % Test
   )
 
   val appDependencies: Seq[ModuleID] = compile ++ test
