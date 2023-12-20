@@ -32,22 +32,22 @@ import scala.concurrent.{ExecutionContext, Future}
  * @author Yuriy Tumakha
  */
 @Singleton
-class MockHttpClient @Inject()(
-                                config: Configuration,
-                                override val httpAuditing: HttpAuditing,
-                                override val wsClient: WSClient,
-                                override protected val actorSystem: ActorSystem
-                              ) extends DefaultHttpClient(config, httpAuditing, wsClient, actorSystem) {
+class MockHttpClient @Inject() (
+  config: Configuration,
+  override val httpAuditing: HttpAuditing,
+  override val wsClient: WSClient,
+  override protected val actorSystem: ActorSystem
+) extends DefaultHttpClient(config, httpAuditing, wsClient, actorSystem) {
 
   override def GET[A](
-                       url: String,
-                       queryParams: Seq[(String, String)],
-                       headers: Seq[(String, String)]
-                     )(implicit
-                       rds: HttpReads[A],
-                       hc: HeaderCarrier,
-                       ec: ExecutionContext
-                     ): Future[A] = {
+    url: String,
+    queryParams: Seq[(String, String)],
+    headers: Seq[(String, String)]
+  )(implicit
+    rds: HttpReads[A],
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[A] = {
     val status =
       if (url.contains("UNKNOWN_ID")) {
         NOT_FOUND
@@ -58,15 +58,15 @@ class MockHttpClient @Inject()(
   }
 
   override def POST[I, O](
-                           url: String,
-                           body: I,
-                           headers: Seq[(String, String)]
-                         )(implicit
-                           wts: Writes[I],
-                           rds: HttpReads[O],
-                           hc: HeaderCarrier,
-                           ec: ExecutionContext
-                         ): Future[O] =
+    url: String,
+    body: I,
+    headers: Seq[(String, String)]
+  )(implicit
+    wts: Writes[I],
+    rds: HttpReads[O],
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[O] =
     mockResponse(url, CREATED, Some(body.asInstanceOf[JsValue]), headers)
 
   private def mockResponse[A](url: String, status: Int, requestBody: Option[JsValue], headers: Seq[(String, String)]): Future[A] = {

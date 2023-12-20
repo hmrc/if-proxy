@@ -28,32 +28,48 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-
 /**
  * @author Yuriy Tumakha
  */
 @Singleton()
-class ValuationsProxyController @Inject()(
-                                           appConfig: AppConfig,
-                                           httpClient: DefaultHttpClient,
-                                           cc: ControllerComponents
-                                         )(implicit ec: ExecutionContext)
-  extends BackendController(cc) with Logging with HeadersHelpers {
+class ValuationsProxyController @Inject() (
+  appConfig: AppConfig,
+  httpClient: DefaultHttpClient,
+  cc: ControllerComponents
+)(implicit ec: ExecutionContext
+) extends BackendController(cc)
+  with Logging
+  with HeadersHelpers {
 
-  private val baseUrl = s"${appConfig.ifBaseUrl}/valuations"
-  private val searchEndpoint = s"$baseUrl/get-properties/"
-  private val getPropertyEndpoint = s"$baseUrl/get-property/"
+  private val baseUrl                 = s"${appConfig.ifBaseUrl}/valuations"
+  private val searchEndpoint          = s"$baseUrl/get-properties/"
+  private val getPropertyEndpoint     = s"$baseUrl/get-property/"
   private val submitChallengeEndpoint = s"$baseUrl/council-tax-band-challenge"
 
   private val staticHeaders: Seq[(String, String)] = Seq(
     AUTHORIZATION -> s"Bearer ${appConfig.ifToken}",
-    ACCEPT -> "application/json;charset=UTF-8",
+    ACCEPT        -> "application/json;charset=UTF-8",
     "Environment" -> appConfig.ifEnvironment
   )
 
   private val forwardHeaders =
-    Set("CorrelationId", "Content-Type", "start", "size", "searchBy", "postCode", "propertyNameOrNumber", "street", "town",
-      "localAuthority", "localAuthorityReferenceNumber", "propertyPurpose", "councilTaxBand", "bandStatus", "courtCode")
+    Set(
+      "CorrelationId",
+      "Content-Type",
+      "start",
+      "size",
+      "searchBy",
+      "postCode",
+      "propertyNameOrNumber",
+      "street",
+      "town",
+      "localAuthority",
+      "localAuthorityReferenceNumber",
+      "propertyPurpose",
+      "councilTaxBand",
+      "bandStatus",
+      "courtCode"
+    )
 
   private val skipResponseHeaders = Set("Content-Type", "Content-Length", "Transfer-Encoding")
 
@@ -78,7 +94,7 @@ class ValuationsProxyController @Inject()(
   private def forwardRequest(httpVerb: String, url: String)(implicit request: Request[AnyContent]): Future[Result] = {
     logger.info(s"$httpVerb $url Request Headers:\n${toPrintableHeaders(request.headers.headers)}")
 
-    val headers = staticHeaders ++ extractHeaders(forwardHeaders)
+    val headers       = staticHeaders ++ extractHeaders(forwardHeaders)
     val correlationId = request.headers.get("CorrelationId")
 
     // The default HttpReads will wrap the response in an exception and make the body inaccessible
@@ -90,12 +106,12 @@ class ValuationsProxyController @Inject()(
       } else {
         request.body.asJson match {
           case Some(json) => httpClient.POST[JsValue, HttpResponse](url, json, headers)
-          case None => Future.failed(NonJsonBodyException())
+          case None       => Future.failed(NonJsonBodyException())
         }
       }
 
     result.map { response =>
-      val body = response.body
+      val body       = response.body
       val logMessage = s"BST response ${response.status} $url \nCorrelationId: $correlationId \nHEADERS: ${toPrintableHeaders(response.headers)} \nBODY: $body"
 
       if (response.status == OK || response.status == CREATED) {
