@@ -33,8 +33,8 @@ class AppConfigSpec extends AnyFlatSpec with should.Matchers with Injecting with
   }
 
   it should "provide Integration Framework local config" in {
-    appConfig.ifBaseUrl shouldBe "http://localhost:8887"
-    appConfig.ifToken shouldBe "auth_token"
+    appConfig.ifBaseUrl     shouldBe "http://localhost:8887"
+    appConfig.ifToken       shouldBe "auth_token"
     appConfig.ifEnvironment shouldBe "ist0"
   }
 

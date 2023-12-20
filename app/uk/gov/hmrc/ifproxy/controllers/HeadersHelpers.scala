@@ -18,7 +18,6 @@ package uk.gov.hmrc.ifproxy.controllers
 
 import play.api.mvc.Request
 
-
 /**
  * @author Yuriy Tumakha
  */

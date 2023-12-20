@@ -34,8 +34,8 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
  */
 class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers with Injecting with GuiceOneAppPerSuite {
 
-  private val fakeRequest = FakeRequest()
-  private val controller = inject[ValuationsProxyController]
+  private val fakeRequest      = FakeRequest()
+  private val controller       = inject[ValuationsProxyController]
   implicit val m: Materializer = inject[Materializer]
 
   override def fakeApplication(): Application =
@@ -47,39 +47,39 @@ class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers wit
   "GET /valuations/get-properties/Search" should "return 200" in {
     val result = controller.valuationsGetPropertiesSearchTypeGet("Search")(fakeRequest.withHeaders("Authorization" -> "Bearer XXX"))
 
-    status(result) shouldBe OK
+    status(result)        shouldBe OK
     contentAsJson(result) shouldBe Json.obj("requestUrl" -> "http://localhost:8887/valuations/get-properties/Search")
   }
 
   "GET /valuations/get-property/7777777" should "return 200" in {
     val result = controller.valuationsGetPropertyIdGet("7777777")(fakeRequest)
 
-    status(result) shouldBe OK
+    status(result)        shouldBe OK
     contentAsJson(result) shouldBe Json.obj("requestUrl" -> "http://localhost:8887/valuations/get-property/7777777")
   }
 
   "GET /valuations/get-property/UNKNOWN_ID" should "return 404 for UNKNOWN_ID" in {
     val result = controller.valuationsGetPropertyIdGet("UNKNOWN_ID")(fakeRequest)
 
-    status(result) shouldBe NOT_FOUND
+    status(result)        shouldBe NOT_FOUND
     contentAsJson(result) shouldBe Json.obj("requestUrl" -> "http://localhost:8887/valuations/get-property/UNKNOWN_ID")
   }
 
   "POST /valuations/council-tax-band-challenge" should "return 201" in {
     val requestWithJsonBody = fakeRequest.withMethod("POST").withJsonBody(Json.obj("param1" -> "value1"))
-    val expectedJson = Json.parse("""{"requestUrl":"http://localhost:8887/valuations/council-tax-band-challenge","requestBody":{"param1":"value1"}}""")
-    val result = controller.valuationsCouncilTaxBandChallengePost()(requestWithJsonBody)
+    val expectedJson        = Json.parse("""{"requestUrl":"http://localhost:8887/valuations/council-tax-band-challenge","requestBody":{"param1":"value1"}}""")
+    val result              = controller.valuationsCouncilTaxBandChallengePost()(requestWithJsonBody)
 
-    status(result) shouldBe CREATED
+    status(result)        shouldBe CREATED
     contentAsJson(result) shouldBe expectedJson
   }
 
   "POST /valuations/council-tax-band-challenge" should "return 400 for empty body in request" in {
     val requestEmptyBody = fakeRequest.withMethod("POST").withBody("")
-    val expectedJson = Json.parse("""{"statusCode":400,"message":"JSON body is expected in request"}""")
-    val result = controller.valuationsCouncilTaxBandChallengePost()(requestEmptyBody)
+    val expectedJson     = Json.parse("""{"statusCode":400,"message":"JSON body is expected in request"}""")
+    val result           = controller.valuationsCouncilTaxBandChallengePost()(requestEmptyBody)
 
-    status(result) shouldBe BAD_REQUEST
+    status(result)        shouldBe BAD_REQUEST
     contentAsJson(result) shouldBe expectedJson
   }
 
