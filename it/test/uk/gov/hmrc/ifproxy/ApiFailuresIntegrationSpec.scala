@@ -25,15 +25,10 @@ import play.api.http.Status.{BAD_REQUEST, NOT_FOUND}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
 
-class ApiFailuresIntegrationSpec
-  extends AnyFlatSpec
-     with should.Matchers
-     with ScalaFutures
-     with IntegrationPatience
-     with GuiceOneServerPerSuite {
+class ApiFailuresIntegrationSpec extends AnyFlatSpec with should.Matchers with ScalaFutures with IntegrationPatience with GuiceOneServerPerSuite {
 
-  private val wsClient = app.injector.instanceOf[WSClient]
-  private val baseUrl  = s"http://localhost:$port"
+  private val wsClient           = app.injector.instanceOf[WSClient]
+  private val baseUrl            = s"http://localhost:$port"
   private val submitChallengeUrl = s"$baseUrl/valuations/council-tax-band-challenge"
 
   override def fakeApplication(): Application =
@@ -50,7 +45,7 @@ class ApiFailuresIntegrationSpec
         .futureValue
 
     response.status shouldBe BAD_REQUEST
-    response.body shouldBe """{"statusCode":400,"message":"JSON body is expected in request"}"""
+    response.body   shouldBe """{"statusCode":400,"message":"JSON body is expected in request"}"""
   }
 
   it should "return 400 for invalid JSON in request body" in {
