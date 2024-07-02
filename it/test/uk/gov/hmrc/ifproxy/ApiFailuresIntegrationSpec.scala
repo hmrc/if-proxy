@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.ws.WSClient
+import play.api.libs.ws.{WSClient, writeableOf_String}
 
 class ApiFailuresIntegrationSpec extends AnyFlatSpec with should.Matchers with ScalaFutures with IntegrationPatience with GuiceOneServerPerSuite {
 
@@ -44,8 +44,8 @@ class ApiFailuresIntegrationSpec extends AnyFlatSpec with should.Matchers with S
         .post("")
         .futureValue
 
-    response.status shouldBe BAD_REQUEST
-    response.body   shouldBe """{"statusCode":400,"message":"JSON body is expected in request"}"""
+    response.status        shouldBe BAD_REQUEST
+    response.body.toString shouldBe """{"statusCode":400,"message":"JSON body is expected in request"}"""
   }
 
   it should "return 400 for invalid JSON in request body" in {
