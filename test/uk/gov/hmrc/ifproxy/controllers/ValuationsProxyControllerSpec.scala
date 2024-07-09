@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
-import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 /**
@@ -34,9 +34,9 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
  */
 class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers with Injecting with GuiceOneAppPerSuite {
 
-  private val fakeRequest      = FakeRequest()
-  private val controller       = inject[ValuationsProxyController]
-  implicit val m: Materializer = inject[Materializer]
+  private val fakeRequest = FakeRequest()
+  private val controller  = inject[ValuationsProxyController]
+  given mat: Materializer = inject[Materializer]
 
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
