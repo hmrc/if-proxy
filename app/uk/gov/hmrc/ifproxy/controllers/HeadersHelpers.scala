@@ -23,7 +23,7 @@ import play.api.mvc.Request
  */
 trait HeadersHelpers {
 
-  def extractHeaders(include: Set[String])(implicit request: Request[_]): Seq[(String, String)] =
+  def extractHeaders(include: Set[String])(implicit request: Request[?]): Seq[(String, String)] =
     request.headers.headers.filter(h => include.exists(_.equalsIgnoreCase(h._1)))
 
   def headersMapToSeq(headers: Map[String, Seq[String]]): Seq[(String, String)] =

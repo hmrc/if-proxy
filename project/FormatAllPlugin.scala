@@ -1,6 +1,5 @@
 import org.scalafmt.sbt.ScalafmtPlugin
 import org.scalafmt.sbt.ScalafmtPlugin.autoImport.{scalafmtAll, scalafmtFailOnErrors, scalafmtSbt}
-import org.scalastyle.sbt.ScalastylePlugin.autoImport.scalastyle
 import sbt.*
 import sbt.Keys.*
 import scalafix.sbt.ScalafixPlugin
@@ -33,9 +32,7 @@ object FormatAllPlugin extends AutoPlugin {
         .sequential(
           scalafmtAll,
           Compile / scalafmtSbt,
-          scalafixAll.toTask(""),
-          (Compile / scalastyle).toTask(""),
-          (Test / scalastyle).toTask("")
+          scalafixAll.toTask("")
         )
         .value
     )
@@ -45,7 +42,7 @@ object FormatAllPlugin extends AutoPlugin {
   )
 
   private def scalafixSettings: Seq[Setting[?]] = Seq(
-    semanticdbEnabled := true // enable SemanticDB
+    semanticdbEnabled := true
   )
 
 }

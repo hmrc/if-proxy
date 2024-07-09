@@ -48,12 +48,7 @@ class MockHttpClient @Inject() (
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[A] = {
-    val status =
-      if (url.contains("UNKNOWN_ID")) {
-        NOT_FOUND
-      } else {
-        OK
-      }
+    val status = if url.contains("UNKNOWN_ID") then NOT_FOUND else OK
     mockResponse(url, status, None, headers)
   }
 

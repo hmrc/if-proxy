@@ -101,29 +101,27 @@ class ValuationsProxyController @Inject() (
     implicit val responseReads: HttpReads[HttpResponse] = (_, _, response: HttpResponse) => response
 
     val result =
-      if (httpVerb == GET) {
+      if httpVerb == GET then
         httpClient.GET[HttpResponse](url, Seq.empty, headers)
-      } else {
+      else
         request.body.asJson match {
           case Some(json) => httpClient.POST[JsValue, HttpResponse](url, json, headers)
           case None       => Future.failed(NonJsonBodyException())
         }
-      }
 
     result.map { response =>
       val body       = response.body
       val logMessage = s"BST response ${response.status} $url \nCorrelationId: $correlationId \nHEADERS: ${toPrintableHeaders(response.headers)} \nBODY: $body"
 
-      if (response.status == OK || response.status == CREATED) {
+      if response.status == OK || response.status == CREATED then
         logger.info(logMessage)
-      } else {
+      else
         logger.warn(logMessage)
-      }
 
       val responseHeaders = headersMapToSeq(response.headers).filter(h => !skipResponseHeaders.exists(_.equalsIgnoreCase(h._1))) :+ "API_URL" -> url
 
       Status(response.status)(body)
-        .withHeaders(responseHeaders: _*)
+        .withHeaders(responseHeaders*)
     }.recover {
       case _: NonJsonBodyException => BadRequest(Json.obj("statusCode" -> BAD_REQUEST, "message" -> "JSON body is expected in request"))
     }
