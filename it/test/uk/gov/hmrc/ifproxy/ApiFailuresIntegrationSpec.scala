@@ -24,10 +24,17 @@ import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.{WSClient, writeableOf_String}
+import play.api.test.Injecting
 
-class ApiFailuresIntegrationSpec extends AnyFlatSpec with should.Matchers with ScalaFutures with IntegrationPatience with GuiceOneServerPerSuite {
+class ApiFailuresIntegrationSpec
+  extends AnyFlatSpec
+  with should.Matchers
+  with ScalaFutures
+  with IntegrationPatience
+  with Injecting
+  with GuiceOneServerPerSuite {
 
-  private val wsClient           = app.injector.instanceOf[WSClient]
+  private val wsClient           = inject[WSClient]
   private val baseUrl            = s"http://localhost:$port"
   private val submitChallengeUrl = s"$baseUrl/valuations/council-tax-band-challenge"
 

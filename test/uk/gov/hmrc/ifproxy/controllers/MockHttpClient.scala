@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class MockHttpClient @Inject() (
     url: String,
     queryParams: Seq[(String, String)],
     headers: Seq[(String, String)]
-  )(implicit
+  )(using
     rds: HttpReads[A],
     hc: HeaderCarrier,
     ec: ExecutionContext
@@ -56,13 +56,16 @@ class MockHttpClient @Inject() (
     url: String,
     body: I,
     headers: Seq[(String, String)]
-  )(implicit
+  )(using
     wts: Writes[I],
     rds: HttpReads[O],
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[O] =
-    mockResponse(url, CREATED, Some(body.asInstanceOf[JsValue]), headers)
+    body match {
+      case jsValue: JsValue => mockResponse(url, CREATED, Some(jsValue), headers)
+      case anyBody          => throw new UnsupportedOperationException(s"Unsupported body type ${anyBody.getClass.getName}")
+    }
 
   private def mockResponse[A](url: String, status: Int, requestBody: Option[JsValue], headers: Seq[(String, String)]): Future[A] = {
     val body = Json.obj("requestUrl" -> url) ++

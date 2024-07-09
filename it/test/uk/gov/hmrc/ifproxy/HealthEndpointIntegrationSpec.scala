@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
+import play.api.test.Injecting
 
-class HealthEndpointIntegrationSpec extends AnyWordSpec with Matchers with ScalaFutures with IntegrationPatience with GuiceOneServerPerSuite {
+class HealthEndpointIntegrationSpec extends AnyWordSpec with Matchers with ScalaFutures with IntegrationPatience with Injecting with GuiceOneServerPerSuite {
 
-  private val wsClient = app.injector.instanceOf[WSClient]
+  private val wsClient = inject[WSClient]
   private val baseUrl  = s"http://localhost:$port"
 
   override def fakeApplication(): Application =

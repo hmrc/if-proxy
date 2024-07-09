@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.gov.hmrc.ifproxy.controllers
 
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.http.HttpVerbs.{GET, POST}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import uk.gov.hmrc.ifproxy.config.AppConfig
@@ -36,7 +36,7 @@ class ValuationsProxyController @Inject() (
   appConfig: AppConfig,
   httpClient: DefaultHttpClient,
   cc: ControllerComponents
-)(implicit ec: ExecutionContext
+)(using ec: ExecutionContext
 ) extends BackendController(cc)
   with Logging
   with HeadersHelpers {
@@ -85,20 +85,20 @@ class ValuationsProxyController @Inject() (
     forwardPostRequest(submitChallengeEndpoint)
   }
 
-  private def forwardGetRequest(url: String)(implicit request: Request[AnyContent]): Future[Result] =
+  private def forwardGetRequest(url: String)(using request: Request[AnyContent]): Future[Result] =
     forwardRequest(GET, url)
 
-  private def forwardPostRequest(url: String)(implicit request: Request[AnyContent]): Future[Result] =
+  private def forwardPostRequest(url: String)(using request: Request[AnyContent]): Future[Result] =
     forwardRequest(POST, url)
 
-  private def forwardRequest(httpVerb: String, url: String)(implicit request: Request[AnyContent]): Future[Result] = {
-    logger.info(s"$httpVerb $url Request Headers:\n${toPrintableHeaders(request.headers.headers)}")
+  private def forwardRequest(httpVerb: String, url: String)(using request: Request[AnyContent]): Future[Result] = {
+    logger.info(s"$httpVerb $url Request Headers:\n${toPrintableRequestHeaders(request)}")
 
     val headers       = staticHeaders ++ extractHeaders(forwardHeaders)
     val correlationId = request.headers.get("CorrelationId")
 
     // The default HttpReads will wrap the response in an exception and make the body inaccessible
-    implicit val responseReads: HttpReads[HttpResponse] = (_, _, response: HttpResponse) => response
+    given responseReads: HttpReads[HttpResponse] = (_, _, response: HttpResponse) => response
 
     val result =
       if httpVerb == GET then
@@ -111,7 +111,7 @@ class ValuationsProxyController @Inject() (
 
     result.map { response =>
       val body       = response.body
-      val logMessage = s"BST response ${response.status} $url \nCorrelationId: $correlationId \nHEADERS: ${toPrintableHeaders(response.headers)} \nBODY: $body"
+      val logMessage = s"BST response ${response.status} $url \nCorrelationId: $correlationId \nHEADERS: ${toPrintableResponseHeaders(response)} \nBODY: $body"
 
       if response.status == OK || response.status == CREATED then
         logger.info(logMessage)
