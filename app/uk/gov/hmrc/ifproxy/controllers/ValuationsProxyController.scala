@@ -29,8 +29,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * @author Yuriy Tumakha
- */
+  * @author Yuriy Tumakha
+  */
 @Singleton()
 class ValuationsProxyController @Inject() (
   appConfig: AppConfig,
@@ -55,20 +55,20 @@ class ValuationsProxyController @Inject() (
   private val forwardHeaders =
     Set(
       "CorrelationId",
-      "Content-Type",
-      "start",
-      "size",
-      "searchBy",
-      "postCode",
-      "propertyNameOrNumber",
-      "street",
-      "town",
-      "localAuthority",
-      "localAuthorityReferenceNumber",
-      "propertyPurpose",
-      "councilTaxBand",
-      "bandStatus",
-      "courtCode"
+      "Content-Type"
+//      "start",
+//      "size",
+//      "searchBy",
+//      "postCode",
+//      "propertyNameOrNumber",
+//      "street",
+//      "town",
+//      "localAuthority",
+//      "localAuthorityReferenceNumber",
+//      "propertyPurpose",
+//      "councilTaxBand",
+//      "bandStatus",
+//      "courtCode"
     )
 
   private val skipResponseHeaders = Set("Content-Type", "Content-Length", "Transfer-Encoding")
@@ -91,6 +91,9 @@ class ValuationsProxyController @Inject() (
   private def forwardPostRequest(url: String)(using request: Request[AnyContent]): Future[Result] =
     forwardRequest(POST, url)
 
+  private def requestQueryString(using request: Request[AnyContent]): String =
+    Option(request.target.queryString).filter(_.nonEmpty).map(s => s"?$s").getOrElse("")
+
   private def forwardRequest(httpVerb: String, url: String)(using request: Request[AnyContent]): Future[Result] = {
     logger.info(s"$httpVerb $url Request Headers:\n${toPrintableRequestHeaders(request)}")
 
@@ -102,7 +105,7 @@ class ValuationsProxyController @Inject() (
 
     val result =
       if httpVerb == GET then
-        httpClient.GET[HttpResponse](url, Seq.empty, headers)
+        httpClient.GET[HttpResponse](url + requestQueryString, Seq.empty, headers)
       else
         request.body.asJson match {
           case Some(json) => httpClient.POST[JsValue, HttpResponse](url, json, headers)

@@ -22,8 +22,8 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.Injecting
 
 /**
- * @author Yuriy Tumakha
- */
+  * @author Yuriy Tumakha
+  */
 class AppConfigSpec extends AnyFlatSpec with should.Matchers with Injecting with GuiceOneAppPerSuite {
 
   private val appConfig = inject[AppConfig]

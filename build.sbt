@@ -2,7 +2,7 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
 val appName = "if-proxy"
 
-ThisBuild / scalaVersion := "3.4.2"
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 1
 
 lazy val microservice = Project(appName, file("."))

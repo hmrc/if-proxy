@@ -17,6 +17,6 @@
 package uk.gov.hmrc.ifproxy.controllers
 
 /**
- * @author Yuriy Tumakha
- */
+  * @author Yuriy Tumakha
+  */
 final case class NonJsonBodyException() extends Exception

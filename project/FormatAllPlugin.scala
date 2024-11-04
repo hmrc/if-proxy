@@ -7,10 +7,10 @@ import scalafix.sbt.ScalafixPlugin.autoImport.scalafixAll
 import scoverage.ScoverageSbtPlugin
 
 /**
- * Provides sbt task `formatAll` and settings for `scalafmt`, `scalafix` plugins.
- *
- * @author Yuriy Tumakha
- */
+  * Provides sbt task `formatAll` and settings for `scalafmt`, `scalafix` plugins.
+  *
+  * @author Yuriy Tumakha
+  */
 object FormatAllPlugin extends AutoPlugin {
 
   override def requires: Plugins = ScalafmtPlugin && ScalafixPlugin && ScoverageSbtPlugin

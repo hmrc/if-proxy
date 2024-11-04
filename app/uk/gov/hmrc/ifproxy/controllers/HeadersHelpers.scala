@@ -20,8 +20,8 @@ import play.api.mvc.{Request, RequestHeader}
 import uk.gov.hmrc.http.HttpResponse
 
 /**
- * @author Yuriy Tumakha
- */
+  * @author Yuriy Tumakha
+  */
 trait HeadersHelpers {
 
   def extractHeaders(include: Set[String])(using request: Request[?]): Seq[(String, String)] =
