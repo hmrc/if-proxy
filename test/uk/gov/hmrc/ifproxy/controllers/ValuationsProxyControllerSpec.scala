@@ -21,7 +21,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
-import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -30,8 +29,8 @@ import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 /**
- * @author Yuriy Tumakha
- */
+  * @author Yuriy Tumakha
+  */
 class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers with Injecting with GuiceOneAppPerSuite {
 
   private val fakeRequest = FakeRequest()
@@ -45,10 +44,12 @@ class ValuationsProxyControllerSpec extends AnyFlatSpec with should.Matchers wit
       .build()
 
   "GET /valuations/get-properties/Search" should "return 200" in {
-    val result = controller.valuationsGetPropertiesSearchTypeGet("Search")(fakeRequest.withHeaders("Authorization" -> "Bearer XXX"))
+    val result = controller.valuationsGetPropertiesSearchTypeGet("Search")(
+      FakeRequest("GET", "/valuations/get-properties/Search?start=1&size=20").withHeaders("Authorization" -> "Bearer XXX")
+    )
 
     status(result)        shouldBe OK
-    contentAsJson(result) shouldBe Json.obj("requestUrl" -> "http://localhost:8887/valuations/get-properties/Search")
+    contentAsJson(result) shouldBe Json.obj("requestUrl" -> "http://localhost:8887/valuations/get-properties/Search?start=1&size=20")
   }
 
   "GET /valuations/get-property/7777777" should "return 200" in {
